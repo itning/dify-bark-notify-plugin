@@ -1,0 +1,38 @@
+version: 0.0.1
+type: plugin
+author: itning
+name: bark-notify
+label:
+  en_US: BarkNotify
+  zh_Hans: Bark通知
+description:
+  en_US: Used to push messages to the Bark application
+  zh_Hans: 用于推送消息到Bark应用程序中。
+icon: icon.png
+resource:
+  memory: 268435456
+  permission:
+    tool:
+      enabled: true
+    endpoint:
+      enabled: true
+    app:
+      enabled: true
+    storage:
+      enabled: true
+      size: 1048576
+plugins:
+  tools:
+    - provider/bark-notify.yaml
+meta:
+  version: 0.0.1
+  arch:
+    - amd64
+    - arm64
+  runner:
+    language: python
+    version: "3.12"
+    entrypoint: main
+created_at: 2025-03-08T14:37:14.2820742+08:00
+privacy: PRIVACY.md
+verified: false
