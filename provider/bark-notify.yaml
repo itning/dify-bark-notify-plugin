@@ -16,15 +16,16 @@ extra:
 tags:
     - utilities
 credentials_for_provider:
-  key:
+  bark-key:
     type: secret-input
     required: true
     label:
-      en_US: KEY
-      zh_Hans: KEY
-    placeholder:
-      en_US: Please input your app key
-      zh_Hans: 请输入你的应用的KEY
+      en_US: Bark KEY
+      zh_Hans: Bark KEY
+    description:
+      en_US: Your Bark KEY
+      zh_Hans: 你的Bark应用KEY
+    url: https://github.com/itning/dify-bark-notify-plugin/blob/master/HOW_TO_GET_KEY.md
   server-url:
     type: text-input
     required: true
