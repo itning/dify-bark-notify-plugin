@@ -31,7 +31,7 @@ def _merge_query_params(global_params: str, current_params: str) -> str:
 class SendNotify2Bark(Tool):
     def _invoke(self, tool_parameters: dict[str, Any]) -> Generator[ToolInvokeMessage]:
         server_url: str = self.runtime.credentials['server-url'].rstrip('/')
-        key = self.runtime.credentials['key']
+        key = self.runtime.credentials['bark-key']
         default_query_params = self.runtime.credentials.get('default-query-params', '')
         query_params = tool_parameters.get('query_params', '')
 
