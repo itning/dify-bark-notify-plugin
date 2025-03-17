@@ -42,6 +42,26 @@ parameters:
       en_US: The configuration here will override the query parameters configured during authorization by KEY. For example, if the configuration during authorization is ?sound=minuet&call=1&isArchive=1, and the configuration here is ?sound=alarm, then the final effective configuration will be ?sound=alarm&call=1&isArchive=1
       zh_Hans: 此处配置会按KEY覆盖授权时配置的查询参数，例如授权时配置为?sound=minuet&call=1&isArchive=1，此处配置?sound=alarm，则最终生效为?sound=alarm&call=1&isArchive=1
     form: form
+  - name: bark_key
+    type: secret-input
+    required: false
+    label:
+      en_US: Bark KEY
+      zh_Hans: Bark KEY
+    human_description:
+      en_US: The configuration here will override the KEY set during authorization
+      zh_Hans: 此处配置会覆盖授权时配置的KEY
+    form: form
+  - name: server_url
+    type: string
+    required: false
+    label:
+      en_US: Server URL
+      zh_Hans: 服务器地址
+    human_description:
+      en_US: The configuration here will override the Server URL set during authorization
+      zh_Hans: 此处配置会覆盖授权时配置的服务器地址
+    form: form
 extra:
   python:
     source: tools/send_to_bark.py

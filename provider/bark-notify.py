@@ -8,8 +8,10 @@ from tools.send_to_bark import SendNotify2Bark
 class BarkNotifyProvider(ToolProvider):
     def _validate_credentials(self, credentials: dict[str, Any]) -> None:
         try:
-            for _ in SendNotify2Bark.from_credentials(credentials).invoke(tool_parameters={"content": "test push from Dify bark-notify tool plugin"}):
-                pass
+            for resp in SendNotify2Bark.from_credentials(credentials).invoke(
+                    {"content": "test push from Dify bark-notify tool plugin"}):
+                if not resp.message.json_object.get("status", False):
+                    raise ToolProviderCredentialValidationError(resp.message.json_object.get("message"))
         except ToolProviderCredentialValidationError as e:
             raise e
         except Exception as e:
