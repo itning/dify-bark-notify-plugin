@@ -45,20 +45,54 @@ class SendNotify2Bark(Tool):
 
         query_params = _merge_query_params(default_query_params, query_params)
 
+        runtime_key = tool_parameters.get('bark_key', '')
+        if runtime_key != '':
+            key = runtime_key
+
+        runtime_server_url = tool_parameters.get('server_url', '')
+        if runtime_server_url != '':
+            server_url = runtime_server_url.rstrip('/')
+
         try:
             response = httpx.get(
                 _get_http_path(server_url, key, tool_parameters.get('title'), tool_parameters['content'], query_params)
             )
             response.raise_for_status()
-            response_body = response.json()
+            if response.headers["content-type"] == "application/json":
+                response_body = response.json()
+            else:
+                response_body = response.text
         except httpx.RequestError as e:
-            yield self.create_json_message({"message": f"Send Failed, because of a network error: {e}"})
+            yield self.create_json_message({
+                "status": False,
+                "message": f"Send Failed, because of a network error: {e}",
+                "response": None
+            })
             return
-        except ValueError:
-            yield self.create_json_message({"message": "Send Failed, because the response is not valid JSON"})
+        except httpx.HTTPStatusError as e:
+            if e.response.headers["content-type"] == "application/json":
+                yield self.create_json_message({
+                    "status": False,
+                    "message": f"Send Failed, {e}",
+                    "response": e.response.json()
+                })
+            else:
+                yield self.create_json_message({
+                    "status": False,
+                    "message": f"Send Failed, {e}",
+                    "response": e.response.text
+                })
+            return
+        except Exception as e:
+            yield self.create_json_message({
+                "status": False,
+                "message": f"Send Failed, {e}",
+                "response": None
+            })
             return
 
-        if not isinstance(response_body, dict) or response_body.get('code') != 200:
-            raise ToolProviderCredentialValidationError(f"Got error: {response_body}")
-
-        yield self.create_json_message({"message": 'Send Successful'})
+        yield self.create_json_message({
+            "status": True,
+            "message": 'Send Successful',
+            "response": response_body
+        })
