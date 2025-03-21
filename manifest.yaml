@@ -1,4 +1,4 @@
-version: 0.0.2
+version: 0.0.3
 type: plugin
 author: itning
 name: bark-notify
@@ -25,7 +25,7 @@ plugins:
   tools:
     - provider/bark-notify.yaml
 meta:
-  version: 0.0.2
+  version: 0.0.1
   arch:
     - amd64
     - arm64
