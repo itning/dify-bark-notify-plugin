@@ -5,7 +5,6 @@ from urllib.parse import parse_qs, urlencode, urlparse
 import httpx
 from dify_plugin import Tool
 from dify_plugin.entities.tool import ToolInvokeMessage
-from dify_plugin.errors.model import InvokeError
 
 
 def _get_http_path(server_url: str, key: str, title: str | None, content: str, query_params: str) -> str:
@@ -36,10 +35,10 @@ class SendNotify2Bark(Tool):
         query_params = tool_parameters.get('query_params', '')
 
         if 'content' not in tool_parameters:
-            raise InvokeError('Send Failed, because push content is missing')
+            raise Exception('Send Failed, because push content is missing')
 
         if query_params and not query_params.startswith('?'):
-            raise InvokeError('Send Failed, because query param must start with "?"')
+            raise Exception('Send Failed, because query param must start with "?"')
 
         query_params = _merge_query_params(default_query_params, query_params)
 
@@ -57,29 +56,12 @@ class SendNotify2Bark(Tool):
             )
             response.raise_for_status()
             if response.headers["content-type"] == "application/json":
-                response_body = response.json()
+                yield self.create_json_message(response.json())
             else:
-                response_body = response.text
-            yield self.create_json_message({
-                "status": True,
-                "message": 'Send Successful',
-                "response": response_body
-            })
+                yield self.create_text_message(response.text)
         except httpx.RequestError as e:
-            raise InvokeError(f"Send Failed, because of a network error: {e}")
+            raise Exception(f"Send Failed, because of a network error: {e}")
         except httpx.HTTPStatusError as e:
-            if e.response.headers["content-type"] == "application/json":
-                yield self.create_json_message({
-                    "status": False,
-                    "message": f"Send Failed, {e}",
-                    "response": e.response.json()
-                })
-            else:
-                yield self.create_json_message({
-                    "status": False,
-                    "message": f"Send Failed, {e}",
-                    "response": e.response.text
-                })
-            raise InvokeError(f"Send Failed, {e}")
+            raise Exception(f"Send Failed, {e} Response: {e.response.text}")
         except Exception as e:
-            raise InvokeError(f"Send Failed, {e}")
+            raise Exception(f"Send Failed, {e}")
