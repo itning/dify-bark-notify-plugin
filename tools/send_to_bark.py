@@ -80,6 +80,6 @@ class SendNotify2Bark(Tool):
                     "message": f"Send Failed, {e}",
                     "response": e.response.text
                 })
-                raise InvokeError(f"Send Failed, {e}")
+            raise InvokeError(f"Send Failed, {e}")
         except Exception as e:
             raise InvokeError(f"Send Failed, {e}")
