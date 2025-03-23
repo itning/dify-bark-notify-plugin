@@ -26,9 +26,11 @@ jobs:
         wget https://github.com/langgenius/dify-plugin-daemon/releases/download/0.0.6/dify-plugin-linux-amd64
     - name: Grant executable permissions
       run: chmod +x dify-plugin-linux-amd64
-    - name: run dify-plugin
+    - name: Create a temporary directory and run dify-plugin
       run: |
-        ./dify-plugin-linux-amd64 plugin package .
+        mkdir plugin_temp
+        cp -r ./* plugin_temp/
+        ./dify-plugin-linux-amd64 plugin package plugin_temp
     - name: list files
       run: ls -la
-      
+
