@@ -21,16 +21,20 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-    - name: download dify-plugin-linux-amd64 app
+    - name: 创建目录并移动文件到 bark-notify
+      run: |
+        # 创建目录
+        mkdir bark-notify
+        # 将当前目录下所有非隐藏文件/目录移动到 bark-notify（排除目录本身）
+        find . -maxdepth 1 -not -name '.' -not -name 'bark-notify' -exec mv {} bark-notify/ \;
+    - name: 下载 dify-plugin-linux-amd64 程序
       run: |
         wget https://github.com/langgenius/dify-plugin-daemon/releases/download/0.0.6/dify-plugin-linux-amd64
-    - name: Grant executable permissions
+    - name: 赋予可执行权限
       run: chmod +x dify-plugin-linux-amd64
-    - name: Create a temporary directory and run dify-plugin
+    - name: 运行 dify-plugin
       run: |
-        mkdir plugin_temp
-        cp -r ./* plugin_temp/
-        ./dify-plugin-linux-amd64 plugin package plugin_temp
-    - name: list files
+        # 进入项目根目录（确保路径正确）
+        ./dify-plugin-linux-amd64 plugin package bark-notify
+    - name: 列出文件
       run: ls -la
-
