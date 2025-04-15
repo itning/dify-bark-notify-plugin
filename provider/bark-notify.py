@@ -10,7 +10,7 @@ class BarkNotifyProvider(ToolProvider):
         try:
             for resp in SendNotify2Bark.from_credentials(credentials).invoke(
                     {"content": "test push from Dify bark-notify tool plugin"}):
-                if not resp.message.json_object.get("status", False):
+                if resp.message.json_object.get("code", -1) != 200:
                     raise ToolProviderCredentialValidationError(resp.message.json_object.get("message"))
         except ToolProviderCredentialValidationError as e:
             raise e
